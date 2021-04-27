@@ -28,7 +28,10 @@ int cpt = 0;
 
 void Transfert(){
 	SLAVE_NSS = 0;
-	SPI0DAT = 'A';
+	SPI0DAT = 'W';
+	for (i=0;i==7;i++){
+		while(flag_transfert){};
+	}
 	SLAVE_NSS = 1;
 }
 
@@ -58,9 +61,8 @@ void main (void) {
 			flag_transfert = 0;
 			while(flag_transfert);
 			Transfert();
-			for(i=0;i==10000;i++);
+			}
 		}
-	}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -76,10 +78,6 @@ void main (void) {
 
 void ISR_timer3() interrupt 14{
 	Reset_Timer3Overflow;
-	if (cpt ==25){
-		FREQ_OUT = !FREQ_OUT;
-		flag_transfert = 1;
-		cpt = 0;
-	}
-	cpt++;
+	FREQ_OUT = !FREQ_OUT;
+	flag_transfert = 1;
 }

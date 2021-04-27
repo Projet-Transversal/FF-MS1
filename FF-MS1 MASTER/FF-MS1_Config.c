@@ -95,7 +95,7 @@ void Config_SPI0()
 {
 	SPIEN = 1;
 	MSTEN = 1;
-	EIE1 |= 0x01;
+	// EIE1 |= 0x01;
 	SPI0CFG = 0x80;
 	
 }
@@ -121,7 +121,7 @@ void Oscillator_Init_Osc_Quartz()
 //-----------------------------------------------------------------------------
 void config_Timer3(void){
 	 EIE2 |= 0x01; //Timer 3 interrupt enabled
-	 TMR3RL = 0x1;
+	 TMR3RL = 0xFAAA;
 	 TMR3CN = 0x04; //Timer 3 est enabled
 }
 
