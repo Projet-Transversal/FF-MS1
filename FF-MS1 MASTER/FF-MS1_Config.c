@@ -77,8 +77,8 @@ void Port_IO_Init()
 		
 // Début Insertion Code configuration Crossbar et GPIO ************************
 
-		P0MDOUT   |= 0x0D; // P0.0,P0.2,P0.3 en Push-Pull P0.1 en Open Drain
-		P0 |= 0x02; // P0.1 en mode entrée : MISO
+		P0MDOUT   |= 0x3D; // P0.0,P0.2,P0.3,P0.4,P0.5 en Push-Pull P0.1 en Open Drain
+		P0 = 0x02; // P0.1 en mode entrée : MISO
 		P3 |= 0x80; // P3.7 en mode entrée : Bouton
     XBR0      = 0x02; //Activation du SPI0
     XBR2      = 0x40; //Activation du crossbar
@@ -95,7 +95,8 @@ void Config_SPI0()
 {
 	SPIEN = 1;
 	MSTEN = 1;
-	EIE1 = 0x01;
+	EIE1 |= 0x01;
+	SPI0CFG = 0x80;
 	
 }
 
@@ -103,6 +104,7 @@ void Config_SPI0()
 //-----------------------------------------------------------------------------
 // Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe à quartz 
 //-----------------------------------------------------------------------------
+
 void Oscillator_Init_Osc_Quartz()
 {
 
@@ -114,6 +116,14 @@ void Oscillator_Init_Osc_Quartz()
 	                     // L'oscillateur n'est pas stopp
 }
 
+//-----------------------------------------------------------------------------
+// Config Timer 3 : Générateur de fréquence
+//-----------------------------------------------------------------------------
+void config_Timer3(void){
+	 EIE2 |= 0x01; //Timer 3 interrupt enabled
+	 TMR3RL = 0x1;
+	 TMR3CN = 0x04; //Timer 3 est enabled
+}
 
 //-----------------------------------------------------------------------------
 // Initialisation globale du Microcontrôleur - 
@@ -121,6 +131,7 @@ void Oscillator_Init_Osc_Quartz()
 void Init_Device(void)
 {
     Reset_Sources_Init();
+		config_Timer3();
     Port_IO_Init();
     Oscillator_Init_Osc_Quartz();
 		Config_SPI0();

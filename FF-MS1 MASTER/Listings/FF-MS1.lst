@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   FF_MS1                                                            04/13/2021 15:25:00 PAGE 1   
+C51 COMPILER V9.60.0.0   FF_MS1                                                            04/27/2021 15:43:26 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE FF_MS1
@@ -25,64 +25,87 @@ line level    source
   15          #include <stdlib.h>
   16          
   17          sbit LED = P1^6;
-  18          char xdata buffer[7];
-  19          // Prototypes de Fonctions
-  20          void Exe(){
-  21   1        if (buffer == 'L'){
-  22   2          LED = 1;
-  23   2        }
-  24   1      }
-  25          void Bouton() {
-  26   1        if (Button == 0){
-*** ERROR C202 IN LINE 26 OF FF-MS1.c: 'Button': undefined identifier
-  27   2          SPI0DAT = 'L';
-  28   2        }
-  29   1        
-  30   1      }
-  31          
-  32          //-----------------------------------------------------------------------------
-  33          //-----------------------------------------------------------------------------
-  34          // MAIN Routine
+  18          sbit Button = P3^7;
+  19          bit buffer;
+  20          char xdata bigbuffer[7];
+  21          sbit FREQ_OUT = P0^4;
+  22          sbit SLAVE_NSS = P0^5;
+  23          int flag_transfert = 0;
+  24          #define Reset_Timer3Overflow TMR3CN &= 0x04
+  25          int i = 0;
+  26          int cpt = 0;
+  27          // Prototypes de Fonctions
+  28          
+  29          void Transfert(){
+  30   1        SLAVE_NSS = 0;
+  31   1        SPI0DAT = 'A';
+  32   1        SLAVE_NSS = 1;
+  33   1      }
+  34          
   35          //-----------------------------------------------------------------------------
-  36          void main (void) {
-  37   1             
-  38   1          Init_Device();  // Appel des configurations globales
-  39   1          
-  40   1      // Début Insertion Code Configuration des périphériques ***********************
-  41   1          EA = 1;
-  42   1          LED = 0;
-  43   1        
-  44   1      // Fin Code Initialisations ***************************************************
-  45   1        
-  46   1      // Début Insertion Code Phase Démarrage *************************************** 
-  47   1            
-  48   1            
-  49   1      // Fin Code phase Démarrage ***************************************************
-  50   1        
-  51   1        
-  52   1        while(1)
-  53   1          {
-C51 COMPILER V9.60.0.0   FF_MS1                                                            04/13/2021 15:25:00 PAGE 2   
+  36          //-----------------------------------------------------------------------------
+  37          // MAIN Routine
+  38          //-----------------------------------------------------------------------------
+  39          void main (void) {
+  40   1             
+  41   1          Init_Device();  // Appel des configurations globales
+  42   1          
+  43   1      // Début Insertion Code Configuration des périphériques ***********************
+  44   1          EA = 1;
+  45   1          LED = 0;
+  46   1          SLAVE_NSS = 1;
+  47   1        
+  48   1      // Fin Code Initialisations ***************************************************
+  49   1        
+  50   1      // Début Insertion Code Phase Démarrage *************************************** 
+  51   1            
+  52   1            
+  53   1      // Fin Code phase Démarrage ***************************************************
+  54   1        
+C51 COMPILER V9.60.0.0   FF_MS1                                                            04/27/2021 15:43:26 PAGE 2   
 
-  54   2            if (SPIF == 1){
-  55   3              *buffer = SPI0DAT;
-  56   3              SPIF = 0;
-  57   3            }   
-  58   2          Exe();
-  59   2          Bouton();
-  60   2        }
-  61   1      }   
-  62          
-  63          //-----------------------------------------------------------------------------
-  64          //-----------------------------------------------------------------------------
-  65          // Fonctions de configuration des divers périphériques
+  55   1        
+  56   1        while(1)
+  57   1          {
+  58   2            flag_transfert = 0;
+  59   2            while(flag_transfert);
+  60   2            Transfert();
+  61   2            for(i=0;i==10000;i++);
+  62   2          }
+  63   1        }
+  64          
+  65          //-----------------------------------------------------------------------------
   66          //-----------------------------------------------------------------------------
-  67          // Insérez vos fonctions de configuration ici
-  68          
-  69          //-----------------------------------------------------------------------------
-  70          //-----------------------------------------------------------------------------
-  71          // Fonctions d'interruptions
+  67          // Fonctions de configuration des divers périphériques
+  68          //-----------------------------------------------------------------------------
+  69          // Insérez vos fonctions de configuration ici
+  70          
+  71          //-----------------------------------------------------------------------------
   72          //-----------------------------------------------------------------------------
-  73          // Insérez vos fonctions d'interruption ici
+  73          // Fonctions d'interruptions
+  74          //-----------------------------------------------------------------------------
+  75          // Insérez vos fonctions d'interruption ici
+  76          
+  77          void ISR_timer3() interrupt 14{
+  78   1        Reset_Timer3Overflow;
+  79   1        if (cpt ==25){
+  80   2          FREQ_OUT = !FREQ_OUT;
+  81   2          flag_transfert = 1;
+  82   2          cpt = 0;
+  83   2        }
+  84   1        cpt++;
+  85   1      }
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     90    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      7    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

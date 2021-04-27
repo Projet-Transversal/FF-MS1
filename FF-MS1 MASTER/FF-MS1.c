@@ -15,18 +15,21 @@
 #include <stdlib.h>
 
 sbit LED = P1^6;
-char xdata buffer[7];
+sbit Button = P3^7;
+bit buffer;
+char xdata bigbuffer[7];
+sbit FREQ_OUT = P0^4;
+sbit SLAVE_NSS = P0^5;
+int flag_transfert = 0;
+#define Reset_Timer3Overflow TMR3CN &= 0x04
+int i = 0;
+int cpt = 0;
 // Prototypes de Fonctions
-void Exe(){
-	if (buffer == 'L'){
-		LED = 1;
-	}
-}
-void Bouton() {
-	if (Button == 0){
-		SPI0DAT = 'L';
-	}
-	
+
+void Transfert(){
+	SLAVE_NSS = 0;
+	SPI0DAT = 'A';
+	SLAVE_NSS = 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -40,6 +43,7 @@ void main (void) {
 // Début Insertion Code Configuration des périphériques ***********************
 		EA = 1;
 		LED = 0;
+		SLAVE_NSS = 1;
 	
 // Fin Code Initialisations ***************************************************
 	
@@ -51,14 +55,12 @@ void main (void) {
 	
 	while(1)
 		{
-			if (SPIF == 1){
-				*buffer = SPI0DAT;
-				SPIF = 0;
-			}		
-		Exe();
-		Bouton();
+			flag_transfert = 0;
+			while(flag_transfert);
+			Transfert();
+			for(i=0;i==10000;i++);
+		}
 	}
-}		
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -71,3 +73,13 @@ void main (void) {
 // Fonctions d'interruptions
 //-----------------------------------------------------------------------------
 // Insérez vos fonctions d'interruption ici
+
+void ISR_timer3() interrupt 14{
+	Reset_Timer3Overflow;
+	if (cpt ==25){
+		FREQ_OUT = !FREQ_OUT;
+		flag_transfert = 1;
+		cpt = 0;
+	}
+	cpt++;
+}
