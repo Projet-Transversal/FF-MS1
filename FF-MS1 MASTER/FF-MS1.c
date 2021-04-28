@@ -16,23 +16,14 @@
 
 sbit LED = P1^6;
 sbit Button = P3^7;
-bit buffer;
-char xdata bigbuffer[7];
 sbit FREQ_OUT = P0^4;
 sbit SLAVE_NSS = P0^5;
-int flag_transfert = 0;
-#define Reset_Timer3Overflow TMR3CN &= 0x04
 int i = 0;
-int cpt = 0;
 // Prototypes de Fonctions
 
 void Transfert(){
 	SLAVE_NSS = 0;
-	SPI0DAT = 'W';
-	for (i=0;i==7;i++){
-		while(flag_transfert){};
-	}
-	SLAVE_NSS = 1;
+	SPI0DAT = 'E';
 }
 
 //-----------------------------------------------------------------------------
@@ -41,6 +32,8 @@ void Transfert(){
 //-----------------------------------------------------------------------------
 void main (void) {
        
+			int i;
+	
 	  Init_Device();  // Appel des configurations globales
 	  
 // Début Insertion Code Configuration des périphériques ***********************
@@ -58,8 +51,7 @@ void main (void) {
 	
 	while(1)
 		{
-			flag_transfert = 0;
-			while(flag_transfert);
+			for(i = 0; i < 999; i++);
 			Transfert();
 			}
 		}
@@ -76,8 +68,7 @@ void main (void) {
 //-----------------------------------------------------------------------------
 // Insérez vos fonctions d'interruption ici
 
-void ISR_timer3() interrupt 14{
-	Reset_Timer3Overflow;
-	FREQ_OUT = !FREQ_OUT;
-	flag_transfert = 1;
+void ISR_SPI0() interrupt 6{
+	SPIF = 0;
+	SLAVE_NSS = 1;
 }

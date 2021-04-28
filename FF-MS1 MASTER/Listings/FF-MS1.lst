@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   FF_MS1                                                            04/27/2021 17:04:58 PAGE 1   
+C51 COMPILER V9.60.0.0   FF_MS1                                                            04/28/2021 09:52:26 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE FF_MS1
@@ -26,83 +26,74 @@ line level    source
   16          
   17          sbit LED = P1^6;
   18          sbit Button = P3^7;
-  19          bit buffer;
-  20          char xdata bigbuffer[7];
-  21          sbit FREQ_OUT = P0^4;
-  22          sbit SLAVE_NSS = P0^5;
-  23          int flag_transfert = 0;
-  24          #define Reset_Timer3Overflow TMR3CN &= 0x04
-  25          int i = 0;
-  26          int cpt = 0;
-  27          // Prototypes de Fonctions
+  19          sbit FREQ_OUT = P0^4;
+  20          sbit SLAVE_NSS = P0^5;
+  21          int i = 0;
+  22          // Prototypes de Fonctions
+  23          
+  24          void Transfert(){
+  25   1        SLAVE_NSS = 0;
+  26   1        SPI0DAT = 'E';
+  27   1      }
   28          
-  29          void Transfert(){
-  30   1        SLAVE_NSS = 0;
-  31   1        SPI0DAT = 'W';
-  32   1        for (i=0;i==7;i++){
-  33   2          while(flag_transfert){};
-  34   2        }
-  35   1        SLAVE_NSS = 1;
-  36   1      }
-  37          
-  38          //-----------------------------------------------------------------------------
-  39          //-----------------------------------------------------------------------------
-  40          // MAIN Routine
-  41          //-----------------------------------------------------------------------------
-  42          void main (void) {
-  43   1             
-  44   1          Init_Device();  // Appel des configurations globales
-  45   1          
-  46   1      // Début Insertion Code Configuration des périphériques ***********************
-  47   1          EA = 1;
-  48   1          LED = 0;
-  49   1          SLAVE_NSS = 1;
+  29          //-----------------------------------------------------------------------------
+  30          //-----------------------------------------------------------------------------
+  31          // MAIN Routine
+  32          //-----------------------------------------------------------------------------
+  33          void main (void) {
+  34   1             
+  35   1            int i;
+  36   1        
+  37   1          Init_Device();  // Appel des configurations globales
+  38   1          
+  39   1      // Début Insertion Code Configuration des périphériques ***********************
+  40   1          EA = 1;
+  41   1          LED = 0;
+  42   1          SLAVE_NSS = 1;
+  43   1        
+  44   1      // Fin Code Initialisations ***************************************************
+  45   1        
+  46   1      // Début Insertion Code Phase Démarrage *************************************** 
+  47   1            
+  48   1            
+  49   1      // Fin Code phase Démarrage ***************************************************
   50   1        
-  51   1      // Fin Code Initialisations ***************************************************
-  52   1        
-  53   1      // Début Insertion Code Phase Démarrage *************************************** 
-  54   1            
-C51 COMPILER V9.60.0.0   FF_MS1                                                            04/27/2021 17:04:58 PAGE 2   
+  51   1        
+  52   1        while(1)
+  53   1          {
+  54   2            for(i = 0; i < 999; i++);
+C51 COMPILER V9.60.0.0   FF_MS1                                                            04/28/2021 09:52:26 PAGE 2   
 
-  55   1            
-  56   1      // Fin Code phase Démarrage ***************************************************
-  57   1        
-  58   1        
-  59   1        while(1)
-  60   1          {
-  61   2            flag_transfert = 0;
-  62   2            while(flag_transfert);
-  63   2            Transfert();
-  64   2            }
-  65   1          }
-  66          
-  67          //-----------------------------------------------------------------------------
+  55   2            Transfert();
+  56   2            }
+  57   1          }
+  58          
+  59          //-----------------------------------------------------------------------------
+  60          //-----------------------------------------------------------------------------
+  61          // Fonctions de configuration des divers périphériques
+  62          //-----------------------------------------------------------------------------
+  63          // Insérez vos fonctions de configuration ici
+  64          
+  65          //-----------------------------------------------------------------------------
+  66          //-----------------------------------------------------------------------------
+  67          // Fonctions d'interruptions
   68          //-----------------------------------------------------------------------------
-  69          // Fonctions de configuration des divers périphériques
-  70          //-----------------------------------------------------------------------------
-  71          // Insérez vos fonctions de configuration ici
-  72          
-  73          //-----------------------------------------------------------------------------
-  74          //-----------------------------------------------------------------------------
-  75          // Fonctions d'interruptions
-  76          //-----------------------------------------------------------------------------
-  77          // Insérez vos fonctions d'interruption ici
-  78          
-  79          void ISR_timer3() interrupt 14{
-  80   1        Reset_Timer3Overflow;
-  81   1        FREQ_OUT = !FREQ_OUT;
-  82   1        flag_transfert = 1;
-  83   1      }
+  69          // Insérez vos fonctions d'interruption ici
+  70          
+  71          void ISR_SPI0() interrupt 6{
+  72   1        SPIF = 0;
+  73   1        SLAVE_NSS = 1;
+  74   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     74    ----
+   CODE SIZE        =     39    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =      7    ----
+   XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      6    ----
+   DATA SIZE        =      2    ----
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =      1    ----
+   BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 

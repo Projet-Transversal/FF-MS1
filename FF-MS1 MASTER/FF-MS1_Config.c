@@ -1,5 +1,5 @@
 /******************************************************************************
-; 	FILE NAME  	: TP4_Lib_Config_Globale_8051F020.C
+; 	FILE NAME  	: FF-MS_Config.c
 ; 	TARGET MCUs	: C8051F020, 
 ; 	DESCRIPTION	: Configurations GLOBALES pour le 8051F020
 ;
@@ -95,9 +95,8 @@ void Config_SPI0()
 {
 	SPIEN = 1;
 	MSTEN = 1;
-	// EIE1 |= 0x01;
-	SPI0CFG = 0x80;
-	
+	EIE1 |= 0x01;
+	SPI0CKR = 0x50;
 }
 
 
@@ -114,15 +113,6 @@ void Oscillator_Init_Osc_Quartz()
     while ((OSCXCN & 0x80) == 0); // validation stabilité du quartz
     OSCICN    = 0x0C;  // Commutation sur oscillateur externe 
 	                     // L'oscillateur n'est pas stopp
-}
-
-//-----------------------------------------------------------------------------
-// Config Timer 3 : Générateur de fréquence
-//-----------------------------------------------------------------------------
-void config_Timer3(void){
-	 EIE2 |= 0x01; //Timer 3 interrupt enabled
-	 TMR3RL = 0xFAAA;
-	 TMR3CN = 0x04; //Timer 3 est enabled
 }
 
 //-----------------------------------------------------------------------------
