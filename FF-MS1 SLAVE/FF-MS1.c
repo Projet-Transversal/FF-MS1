@@ -16,21 +16,10 @@
 
 sbit LED = P1^6;
 sbit Button = P3^7;
-char xdata buffer[7];
+int i;
+
 // Prototypes de Fonctions
 
-void Exe(){
-	if (buffer == 'L'){
-		LED = 1;
-	}
-}
-
-void Bouton() {
-	if (Button == 0){
-		SPI0DAT = 'L';
-	}
-	
-}
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // MAIN Routine
@@ -52,13 +41,7 @@ void main (void) {
 	
 	
 	while(1)
-		{
-			if (SPIF == 1){
-				*buffer = SPI0DAT;
-				SPIF = 0;
-			}		
-		Exe();
-		Bouton();
+	{
 	}
 }				
 
@@ -71,6 +54,10 @@ void main (void) {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // Fonctions d'interruptions
-
 //-----------------------------------------------------------------------------
 // Insérez vos fonctions d'interruption ici
+
+void ISR_SPI0() interrupt 6{
+	SPIF = 0;
+	LED = 1;
+}

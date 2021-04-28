@@ -1,4 +1,4 @@
-/******************************************************************************
+/*******************************************************************************
 ; 	FILE NAME  	: FF-MS_Config.c
 ; 	TARGET MCUs	: C8051F020, 
 ; 	DESCRIPTION	: Configurations GLOBALES pour le 8051F020
@@ -99,7 +99,6 @@ void Config_SPI0()
 	SPI0CKR = 0x50;
 }
 
-
 //-----------------------------------------------------------------------------
 // Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe à quartz 
 //-----------------------------------------------------------------------------
@@ -121,7 +120,6 @@ void Oscillator_Init_Osc_Quartz()
 void Init_Device(void)
 {
     Reset_Sources_Init();
-		config_Timer3();
     Port_IO_Init();
     Oscillator_Init_Osc_Quartz();
 		Config_SPI0();

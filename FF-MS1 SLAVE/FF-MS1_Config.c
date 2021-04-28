@@ -78,7 +78,7 @@ void Port_IO_Init()
 // Début Insertion Code configuration Crossbar et GPIO ************************
 
 		P0MDOUT   |= 0x02; // P0.0,P0.2,P0.3 en Open Drain P0.1 en Push-Pull
-		P0 &= 0x5; // P0.0,P0.2,P0.3 en mode entrée : SCK,MOSI,NSS
+		P0 = 0x5; // P0.0,P0.2,P0.3 en mode entrée : SCK,MOSI,NSS
 		P3 |= 0x80; // P3.7 en mode entrée : Bouton
     XBR0      = 0x02; //Activation du SPI0
     XBR2      = 0x40; //Activation du crossbar
@@ -95,7 +95,6 @@ void Config_SPI0()
 {
 	SPIEN = 1;
 	EIE1 = 0x01;
-	
 }
 
 

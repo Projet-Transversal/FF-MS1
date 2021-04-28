@@ -16,14 +16,13 @@
 
 sbit LED = P1^6;
 sbit Button = P3^7;
-sbit FREQ_OUT = P0^4;
-sbit SLAVE_NSS = P0^5;
+sbit SLAVE_NSS = P0^4;
 int i = 0;
 // Prototypes de Fonctions
 
-void Transfert(){
+void Transfert(char c){
 	SLAVE_NSS = 0;
-	SPI0DAT = 'E';
+	SPI0DAT = c;
 }
 
 //-----------------------------------------------------------------------------
@@ -50,11 +49,11 @@ void main (void) {
 	
 	
 	while(1)
-		{
-			for(i = 0; i < 999; i++);
-			Transfert();
-			}
-		}
+	{
+		for(i = 0; i < 999; i++);
+		Transfert('E');
+	}
+}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
