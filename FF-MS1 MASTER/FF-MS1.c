@@ -21,6 +21,7 @@ int i = 0;
 // Prototypes de Fonctions
 
 void Transfert(char c){
+	for(i=0;i < 125;i++);
 	SLAVE_NSS = 0;
 	for(i=0;i < 10;i++);
 	SPI0DAT = c;
@@ -52,7 +53,11 @@ void main (void) {
 	while(1)
 	{
 		for(i = 0; i < 999; i++);
+		Transfert('B');
+		Transfert('R');
 		Transfert('E');
+		Transfert('U');
+		Transfert('H');
 	}
 }
 

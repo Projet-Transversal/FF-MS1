@@ -13,10 +13,16 @@
 #include "FF-MS1_Config.h"
 #include "FF-MS1_Divers.h"
 #include <stdlib.h>
+#include <string.h>
 
 sbit LED = P1^6;
 sbit Button = P3^7;
-int i;
+char xdata buffer[10];
+char xdata mBuffer[10];
+int i = 0;
+int j = 0;
+int lMessage = 0;
+bit recieve_flag = 0;
 
 // Prototypes de Fonctions
 
@@ -42,8 +48,20 @@ void main (void) {
 	
 	while(1)
 	{
+		if (recieve_flag) {
+			recieve_flag = 0;
+			if (buffer[1] == 'B' && buffer[2] == 'R'){
+				LED = 1;
+//				for (j=0;j==lMessage;j++){
+//					mBuffer[j] = buffer[j+2];
+//					}						
+//				if (mBuffer[0] == 'E' || mBuffer[1] == 'E'){
+//					LED = 1;
+//					}
+				}
+			}
+		}
 	}
-}				
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -59,7 +77,11 @@ void main (void) {
 
 void ISR_SPI0() interrupt 6{
 	SPIF = 0;
-	if (SPI0DAT == 'E'){ 
-		LED = 1;
+	buffer[i] = SPI0DAT;
+	i++;
+	if (buffer[i] == 'H' && buffer[i-1] == 'U'){
+		lMessage = i-4;
+		i = 0;
+		recieve_flag = 1;
 	}
 }
