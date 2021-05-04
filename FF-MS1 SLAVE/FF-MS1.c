@@ -59,5 +59,7 @@ void main (void) {
 
 void ISR_SPI0() interrupt 6{
 	SPIF = 0;
-	LED = 1;
+	if (SPI0DAT == 'E'){ 
+		LED = 1;
+	}
 }

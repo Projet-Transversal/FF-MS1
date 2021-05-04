@@ -16,12 +16,13 @@
 
 sbit LED = P1^6;
 sbit Button = P3^7;
-sbit SLAVE_NSS = P0^4;
+sbit SLAVE_NSS = P0^7;
 int i = 0;
 // Prototypes de Fonctions
 
 void Transfert(char c){
 	SLAVE_NSS = 0;
+	for(i=0;i < 10;i++);
 	SPI0DAT = c;
 }
 
