@@ -13,11 +13,14 @@ Un message ne respectant pas ces règles ne sera pas pris en compte.
 ## Progression actuelle
 
 Le Master a été correctement configuré pour envoyer des messages simples, à l'aide d'une fonction modulable.
-Le Slave reçoit parfaitement les messages simples du Master.
+Le Slave reçoit parfaitement les messages à longueur variable du Master.
 Le SPI a été correctement configuré.
 Un message n'est accepté uniquement lorsqu'il est accompagné de deux octets spécifiques de début de message et de deux octets spécifiques de fin de message.
+Le message peut avoir une longueur entre 1 et 5, cette valeur changera plus tard.
+
+Le débranchement est géré de façon basique : Tant qu'un message ne contient pas les deux octets de fin, il n'est pas pris en compte.
+On vérifie ensuite les deux octets de début, puis on transfère le message (et le message uniquement) dans un buffer spécialisé.
 
 ## Ce qu'il reste à faire
 
-Le message ne fait qu'un octet.
-Il n'y a pas encore de gestion du débranchement.
+Il faudrait créer une fonction qui centraliserait le transfert côté Master et le décodage côté Slave, pour rendre la communication plus facile, et rendre le contenu du message plus accessible par les autres modules.
