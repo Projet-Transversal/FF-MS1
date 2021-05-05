@@ -14,10 +14,16 @@
 #include "FF-MS1_Divers.h"
 #include <stdlib.h>
 
+#define Reset_Timer3Overflow TMR3CN &= 0x04
+#define Disable_Timer3 TMR3CN = 0x00
+
 sbit LED = P1^6;
 sbit Button = P3^7;
 sbit SLAVE_NSS = P0^7;
 int i = 0;
+int SPIcounter = 0;
+int SPIlength = 0;
+char xdata buffer[10];
 // Prototypes de Fonctions
 
 void Transfert(char c){
@@ -32,8 +38,6 @@ void Transfert(char c){
 // MAIN Routine
 //-----------------------------------------------------------------------------
 void main (void) {
-       
-			int i;
 	
 	  Init_Device();  // Appel des configurations globales
 	  
@@ -52,12 +56,13 @@ void main (void) {
 	
 	while(1)
 	{
-		for(i = 0; i < 999; i++);
-		Transfert('B');
-		Transfert('R');
-		Transfert('E');
-		Transfert('U');
-		Transfert('H');
+		buffer[0] = 'B';
+		buffer[1] = 'R';
+		buffer[2] = 'E';
+		buffer[3] = 'A';
+		buffer[4] = 'U';
+		buffer[5] = 'H';
+		SPIlength = 2;
 	}
 }
 
@@ -76,4 +81,15 @@ void main (void) {
 void ISR_SPI0() interrupt 6{
 	SPIF = 0;
 	SLAVE_NSS = 1;
+}
+
+void ISR_TMR3() interrupt 14{
+	Reset_Timer3Overflow;
+	if (SPIcounter > SPIlength+3){
+		SPIcounter = 0;
+	}
+	else {
+		Transfert(buffer[SPIcounter]);
+		SPIcounter++;
+	}
 }

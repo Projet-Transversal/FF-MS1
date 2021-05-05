@@ -100,6 +100,16 @@ void Config_SPI0()
 }
 
 //-----------------------------------------------------------------------------
+// Config Timer 3 : Générateur de fréquence
+//-----------------------------------------------------------------------------
+void Config_Timer3(void){
+	
+	 EIE2 |= 0x01; //Timer 3 interrupt enabled
+	 TMR3RL = 0xEDFF;
+	 TMR3CN = 0x04; //Timer 3 est enabled
+}
+
+//-----------------------------------------------------------------------------
 // Config oscillateur - SYSCLK = 22,1184MHz - Oscillateur externe à quartz 
 //-----------------------------------------------------------------------------
 
@@ -122,6 +132,7 @@ void Init_Device(void)
     Reset_Sources_Init();
     Port_IO_Init();
     Oscillator_Init_Osc_Quartz();
+		Config_Timer3();
 		Config_SPI0();
 }
 

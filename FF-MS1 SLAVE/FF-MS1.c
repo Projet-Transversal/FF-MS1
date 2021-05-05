@@ -51,13 +51,13 @@ void main (void) {
 		if (recieve_flag) {
 			recieve_flag = 0;
 			if (buffer[1] == 'B' && buffer[2] == 'R'){
-				LED = 1;
-//				for (j=0;j==lMessage;j++){
-//					mBuffer[j] = buffer[j+2];
-//					}						
-//				if (mBuffer[0] == 'E' || mBuffer[1] == 'E'){
-//					LED = 1;
-//					}
+				while (j != lMessage){
+					mBuffer[j] = buffer[j+3];
+					j++;
+					}						
+				if (mBuffer[0] == 'E' && mBuffer[1] == 'A'){
+					LED = 1;
+					}
 				}
 			}
 		}
@@ -83,5 +83,8 @@ void ISR_SPI0() interrupt 6{
 		lMessage = i-4;
 		i = 0;
 		recieve_flag = 1;
+	}
+	if (i == 10){
+		i = 0;
 	}
 }
