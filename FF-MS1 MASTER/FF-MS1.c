@@ -22,15 +22,12 @@ sbit LED = P1^6;
 sbit Button = P3^7;
 sbit SLAVE_NSS = P0^7;
 char i = 0;
-char mCounter = 0;
 char SPIcounter = 0;
 char SPIlength = 0;
 char xdata message[10];
 char* ptr_message = &message;
 char xdata sendBuffer[14];
 char* ptr_sendBuffer = &sendBuffer;
-char xdata recieveBuffer[14];
-char* ptr_recieveBuffer;
 // Prototypes de Fonctions
 
 void Transfert(char c){
@@ -85,22 +82,6 @@ void main (void) {
 		message[1] = 'A';
 		SPIlength = 2; //Spécifiez la longueur du message
 		Codage(SPIlength,ptr_sendBuffer,ptr_message);
-		/*
-		
-		if (recieve_flag) {
-			recieve_flag = 0;
-			if (recieveBuffer[1] == 'B' && recieveBuffer[2] == 'R'){
-				while (j != lMessage){
-					messageBuffer[j] = recieveBuffer[j+3];
-					j++;
-					}						
-				if (messageBuffer[0] == 'E' && messageBuffer[1] == 'A'){
-					LED = 1;
-					}
-				}
-		}
-		
-		*/
 		
 	}
 }
@@ -131,21 +112,4 @@ void ISR_TMR3() interrupt 14{
 		Transfert(sendBuffer[SPIcounter]);
 		SPIcounter++;
 	}
-	
-	/*
-	//Attente de 2 SCK, pour laisse le temps au Slave d'envoyer son message en retour
-	
-	*ptr_recieveBuffer++ = SPI0DAT;
-	mCounter++;
-	if (*ptr_recieveBuffer == 'H' && *ptr_recieveBuffer == 'U'){
-		lMessage = mCounter-4;
-		mCounter = 0;
-		recieve_flag = 1;
-	}
-	if (i == 10){
-		i = 0;
-	}
-	
-	
-	*/
 }

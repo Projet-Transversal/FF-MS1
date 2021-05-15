@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   FF_MS1                                                            05/15/2021 14:52:41 PAGE 1   
+C51 COMPILER V9.59.0.0   FF_MS1                                                            05/15/2021 16:25:22 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE FF_MS1
@@ -28,148 +28,101 @@ line level    source
   18          sbit LED = P1^6;
   19          sbit Button = P3^7;
   20          char xdata messageBuffer[10];
-  21          char xdata message[10];
-  22          char* ptr_message = &message;
-  23          char xdata sendBuffer[14];
-  24          char* ptr_sendBuffer = &sendBuffer;
-  25          char* ogptr_sendBuffer = &sendBuffer;
-  26          char xdata recieveBuffer[14];
-  27          char* ptr_recieveBuffer;
-  28          char mCounter = 0;
-  29          char i = 0;
-  30          char j = 0;
-  31          char k = 0;
-  32          char lMessage = 0;
-  33          char nb_char_vide = 0;
-  34          char SPIlength;
-  35          bit EOR_flag = 0; //End of Reception flag
-  36          bit recieve_flag = 0;
-  37          
-  38          // Prototypes de Fonctions
-  39          
-  40          void Codage(char SPIlength, char* ptr_sendBuffer, char* ptr_message){
-  41   1        k=0;
-  42   1        if (mCounter == 0){
-  43   2          *ptr_sendBuffer++ = 'R';
-  44   2          while (k < SPIlength){
-  45   3          *ptr_sendBuffer++ = *ptr_message++;
-  46   3          k++;
-  47   3          }
-  48   2          //TODO : Remplir le reste du SendBuffer
-  49   2          *ptr_sendBuffer++ = 'U';
-  50   2          *ptr_sendBuffer++ = 'H';
-  51   2        }
-  52   1      }
-  53          
-  54          void Envoi(char SPIlength, char* ptr_sendBuffer){
-C51 COMPILER V9.59.0.0   FF_MS1                                                            05/15/2021 14:52:41 PAGE 2   
+  21          char xdata recieveBuffer[14];
+  22          char* ptr_recieveBuffer;
+  23          char mCounter = 0;
+  24          char i = 0;
+  25          char j = 0;
+  26          char lMessage = 0;
+  27          char nb_char_vide = 0;
+  28          bit EOR_flag = 0; //End of Reception flag
+  29          
+  30          // Prototypes de Fonctions
+  31          
+  32          void Decodage(){ //Cette fonction écrit le message reçu dans le messageBuffer
+  33   1        if (EOR_flag) {
+  34   2          EOR_flag = 0;
+  35   2          if (recieveBuffer[0] == 'B' && recieveBuffer[1] == 'R'){
+  36   3            while (j != lMessage){
+  37   4              messageBuffer[j] = recieveBuffer[j+2];
+  38   4              j++;
+  39   4              }
+  40   3      /////////////// Vérification du message-test      
+  41   3      //      if (messageBuffer[0] == 'E' && messageBuffer[1] == 'A'){
+  42   3      //        LED = 1;
+  43   3      //        }
+  44   3            }
+  45   2        }
+  46   1      }
+  47          
+  48          //-----------------------------------------------------------------------------
+  49          //-----------------------------------------------------------------------------
+  50          // MAIN Routine
+  51          //-----------------------------------------------------------------------------
+  52          void main (void) {
+  53   1             
+  54   1          Init_Device();  // Appel des configurations globales
+C51 COMPILER V9.59.0.0   FF_MS1                                                            05/15/2021 16:25:22 PAGE 2   
 
-  55   1        mCounter++;
-  56   1        if (mCounter == SPIlength + 4){
-  57   2          SPI0DAT = 'B';
-  58   2          mCounter = 0;
-  59   2          ptr_sendBuffer = ogptr_sendBuffer;
-  60   2        }
-  61   1        else{
-  62   2          SPI0DAT = *ptr_sendBuffer++;
-  63   2        }
-  64   1      }
-  65          
-  66          void Decodage(){ //Cette fonction écrit le message reçu dans le messageBuffer
-  67   1        if (EOR_flag) {
-  68   2          EOR_flag = 0;
-  69   2          if (recieveBuffer[0] == 'B' && recieveBuffer[1] == 'R'){
-  70   3            while (j != lMessage){
-  71   4              messageBuffer[j] = recieveBuffer[j+2];
-  72   4              j++;
-  73   4              }
-  74   3      // Vérification du message-test     
-  75   3      //      if (messageBuffer[0] == 'E' && messageBuffer[1] == 'A'){
-  76   3      //        LED = 1;
-  77   3      //        }
-  78   3            }
-  79   2        }
-  80   1      }
-  81          
+  55   1          SPI0DAT = 'B';
+  56   1          
+  57   1      // Début Insertion Code Configuration des périphériques ***********************
+  58   1          EA = 1;
+  59   1          LED = 0;
+  60   1        
+  61   1      // Fin Code Initialisations ***************************************************
+  62   1        
+  63   1      // Début Insertion Code Phase Démarrage *************************************** 
+  64   1            
+  65   1            
+  66   1      // Fin Code phase Démarrage ***************************************************
+  67   1        
+  68   1        
+  69   1        while(1)
+  70   1        {
+  71   2          Decodage();
+  72   2        }
+  73   1      }
+  74          
+  75          //-----------------------------------------------------------------------------
+  76          //-----------------------------------------------------------------------------
+  77          // Fonctions de configuration des divers périphériques
+  78          //-----------------------------------------------------------------------------
+  79          // Insérez vos fonctions de configuration ici
+  80          
+  81          //-----------------------------------------------------------------------------
   82          //-----------------------------------------------------------------------------
-  83          //-----------------------------------------------------------------------------
-  84          // MAIN Routine
-  85          //-----------------------------------------------------------------------------
-  86          void main (void) {
-  87   1             
-  88   1          Init_Device();  // Appel des configurations globales
-  89   1          SPI0DAT = 'B';
-  90   1          
-  91   1      // Début Insertion Code Configuration des périphériques ***********************
-  92   1          EA = 1;
-  93   1          LED = 0;
-  94   1        
-  95   1      // Fin Code Initialisations ***************************************************
-  96   1        
-  97   1      // Début Insertion Code Phase Démarrage *************************************** 
-  98   1            
-  99   1            
- 100   1      // Fin Code phase Démarrage ***************************************************
- 101   1        
- 102   1        
- 103   1        while(1)
- 104   1        {
- 105   2      //    if (recieve_flag){
- 106   2      //      //On injecte IMMEDIATEMENT une valeur dans le SPI0DAT
- 107   2      //      // Mettez votre message dans le buffer "message", et indiquez sa longueur
- 108   2      //      message[0] = 'C';
- 109   2      //      message[1] = 'J';
- 110   2      //      SPIlength = 2;
- 111   2      //      Codage(SPIlength, ptr_sendBuffer, ptr_message);
- 112   2      //      Envoi(SPIlength,ptr_sendBuffer);
- 113   2            //La fonction Envoi garde une idée de l'avancement du message avec un compteur global
- 114   2      //    }
- 115   2            Decodage();
- 116   2          }
-C51 COMPILER V9.59.0.0   FF_MS1                                                            05/15/2021 14:52:41 PAGE 3   
-
- 117   1        }
- 118          
- 119          //-----------------------------------------------------------------------------
- 120          //-----------------------------------------------------------------------------
- 121          // Fonctions de configuration des divers périphériques
- 122          //-----------------------------------------------------------------------------
- 123          // Insérez vos fonctions de configuration ici
- 124          
- 125          //-----------------------------------------------------------------------------
- 126          //-----------------------------------------------------------------------------
- 127          // Fonctions d'interruptions
- 128          //-----------------------------------------------------------------------------
- 129          // Insérez vos fonctions d'interruption ici
- 130          
- 131          void ISR_SPI0() interrupt 6{
- 132   1        SPIF = 0;
- 133   1        recieveBuffer[i] = SPI0DAT;
- 134   1        recieve_flag = 1;
- 135   1        if (recieveBuffer[i] == '&'){
- 136   2          nb_char_vide++;
- 137   2        }
- 138   1        if (recieveBuffer[i] == 'H' && recieveBuffer[i-1] == 'U'){
- 139   2          lMessage = i-3-nb_char_vide;
- 140   2          i = 0;
- 141   2          nb_char_vide = 0;
- 142   2          EOR_flag = 1;
- 143   2        }
- 144   1        if (i == 19){
- 145   2          i = 0;
- 146   2        }
- 147   1        i++;
- 148   1      }
+  83          // Fonctions d'interruptions
+  84          //-----------------------------------------------------------------------------
+  85          // Insérez vos fonctions d'interruption ici
+  86          
+  87          void ISR_SPI0() interrupt 6{
+  88   1        SPIF = 0;
+  89   1        recieveBuffer[i] = SPI0DAT;
+  90   1        if (recieveBuffer[i] == '&'){
+  91   2          nb_char_vide++;
+  92   2        }
+  93   1        if (recieveBuffer[i] == 'H' && recieveBuffer[i-1] == 'U'){
+  94   2          lMessage = i-3-nb_char_vide;
+  95   2          i = 0;
+  96   2          nb_char_vide = 0;
+  97   2          EOR_flag = 1;
+  98   2        }
+  99   1        if (i == 19){
+ 100   2          i = 0;
+ 101   2        }
+ 102   1        i++;
+ 103   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    405    ----
+   CODE SIZE        =    208    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     48    ----
+   XDATA SIZE       =     24    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     19      10
+   DATA SIZE        =      8    ----
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =      2    ----
+   BIT SIZE         =      1    ----
 END OF MODULE INFORMATION.
 
 
