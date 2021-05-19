@@ -78,9 +78,10 @@ void main (void) {
 	while(1)
 	{
 		//Mettre le message à envoyer dans le buffer message, qui n'accepte que 10 char max.
-		message[0] = 'E';
-		message[1] = 'A';
-		SPIlength = 2; //Spécifiez la longueur du message
+		message[0] = 75;
+		message[1] = '$';
+		message[2] = 'W';
+		SPIlength = 3; //Spécifiez la longueur du message
 		Codage(SPIlength,ptr_sendBuffer,ptr_message);
 		
 	}

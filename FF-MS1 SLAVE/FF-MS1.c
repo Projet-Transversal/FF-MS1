@@ -18,7 +18,7 @@
 sbit LED = P1^6;
 sbit Button = P3^7;
 char xdata messageBuffer[10];
-char xdata recieveBuffer[14];
+char xdata recieveBuffer[15];
 char* ptr_recieveBuffer;
 char mCounter = 0;
 char i = 0;
@@ -32,15 +32,15 @@ bit EOR_flag = 0; //End of Reception flag
 void Decodage(){ //Cette fonction écrit le message reçu dans le messageBuffer
 	if (EOR_flag) {
 		EOR_flag = 0;
-		if (recieveBuffer[0] == 'B' && recieveBuffer[1] == 'R'){
+		if (recieveBuffer[1] == 'B' && recieveBuffer[2] == 'R'){
 			while (j != lMessage){
-				messageBuffer[j] = recieveBuffer[j+2];
+				messageBuffer[j] = recieveBuffer[j+3];
 				j++;
 				}
 /////////////// Vérification du message-test			
-//			if (messageBuffer[0] == 'E' && messageBuffer[1] == 'A'){
-//				LED = 1;
-//				}
+			if (messageBuffer[0] == 75 && messageBuffer[1] == '$' && messageBuffer[2] == 'W'){
+				LED = 1;
+				}
 			}
 	}
 }
@@ -91,12 +91,12 @@ void ISR_SPI0() interrupt 6{
 		nb_char_vide++;
 	}
 	if (recieveBuffer[i] == 'H' && recieveBuffer[i-1] == 'U'){
-		lMessage = i-3-nb_char_vide;
+		lMessage = i-4-nb_char_vide;
 		i = 0;
 		nb_char_vide = 0;
 		EOR_flag = 1;
 	}
-	if (i == 19){
+	if (i == 15){
 		i = 0;
 	}
 	i++;
