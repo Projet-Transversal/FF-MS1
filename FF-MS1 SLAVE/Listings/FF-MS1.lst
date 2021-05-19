@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   FF_MS1                                                            05/19/2021 08:49:24 PAGE 1   
+C51 COMPILER V9.60.0.0   FF_MS1                                                            05/19/2021 10:47:21 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE FF_MS1
@@ -11,8 +11,8 @@ line level    source
    1          //-----------------------------------------------------------------------------
    2          // TP5.c
    3          //-----------------------------------------------------------------------------
-   4          // AUTH: 
-   5          // DATE: 
+   4          // AUTH: Mehdi Slama & Julien Pinard
+   5          // DATE: L'aube de l'humanité
    6          //
    7          // Target: C8051F02x
    8          // Tool chain: KEIL Microvision 4
@@ -21,106 +21,102 @@ line level    source
   11          #include <C8051F020.h>
   12          #include "c8051F020_SFR16.h"
   13          #include "FF-MS1_Config.h"
-  14          #include "FF-MS1_Divers.h"
-  15          #include <stdlib.h>
-  16          #include <string.h>
-  17          
-  18          sbit LED = P1^6;
-  19          sbit Button = P3^7;
-  20          char xdata messageBuffer[10];
-  21          char xdata recieveBuffer[15];
-  22          char* ptr_recieveBuffer;
-  23          char mCounter = 0;
-  24          char i = 0;
-  25          char j = 0;
-  26          char lMessage = 0;
-  27          char nb_char_vide = 0;
-  28          bit EOR_flag = 0; //End of Reception flag
-  29          
-  30          // Prototypes de Fonctions
-  31          
-  32          void Decodage(){ //Cette fonction écrit le message reçu dans le messageBuffer
-  33   1        if (EOR_flag) {
-  34   2          EOR_flag = 0;
-  35   2          if (recieveBuffer[1] == 'B' && recieveBuffer[2] == 'R'){
-  36   3            while (j != lMessage){
-  37   4              messageBuffer[j] = recieveBuffer[j+3];
-  38   4              j++;
+  14          #include <stdlib.h>
+  15          
+  16          sbit LED = P1^6;
+  17          char xdata messageBuffer[15];
+  18          char xdata recieveBuffer[20];
+  19          char* ptr_recieveBuffer;
+  20          char i = 0;
+  21          char j = 0;
+  22          char lMessage = 0;
+  23          char nb_char_vide = 0;
+  24          bit EOR_flag = 0; //End of Reception flag
+  25          
+  26          // Prototypes de Fonctions
+  27          
+  28          void Decodage(){ //Cette fonction écrit le message reçu dans le messageBuffer
+  29   1        if (EOR_flag) {
+  30   2          EOR_flag = 0;
+  31   2          if (recieveBuffer[1] == 'B' && recieveBuffer[2] == 'R'){
+  32   3            while (j != lMessage){
+  33   4              messageBuffer[j] = recieveBuffer[j+3];
+  34   4              j++;
+  35   4              }
+  36   3      /////////////// Vérification du message-test      
+  37   3            if (messageBuffer[0] == 'A' && messageBuffer[1] == 'B' && messageBuffer[2] == 'C'){
+  38   4              LED = 1;
   39   4              }
-  40   3      /////////////// Vérification du message-test      
-  41   3            if (messageBuffer[0] == 75 && messageBuffer[1] == '$' && messageBuffer[2] == 'W'){
-  42   4              LED = 1;
-  43   4              }
-  44   3            }
-  45   2        }
-  46   1      }
-  47          
-  48          //-----------------------------------------------------------------------------
-  49          //-----------------------------------------------------------------------------
-  50          // MAIN Routine
-  51          //-----------------------------------------------------------------------------
-  52          void main (void) {
-  53   1             
-  54   1          Init_Device();  // Appel des configurations globales
-C51 COMPILER V9.60.0.0   FF_MS1                                                            05/19/2021 08:49:24 PAGE 2   
+  40   3            }
+  41   2        }
+  42   1      }
+  43          
+  44          //-----------------------------------------------------------------------------
+  45          //-----------------------------------------------------------------------------
+  46          // MAIN Routine
+  47          //-----------------------------------------------------------------------------
+  48          void main (void) {
+  49   1             
+  50   1          Init_Device();  // Appel des configurations globales
+  51   1          SPI0DAT = 'B';
+  52   1          
+  53   1      // Début Insertion Code Configuration des périphériques ***********************
+  54   1          EA = 1;
+C51 COMPILER V9.60.0.0   FF_MS1                                                            05/19/2021 10:47:21 PAGE 2   
 
-  55   1          SPI0DAT = 'B';
-  56   1          
-  57   1      // Début Insertion Code Configuration des périphériques ***********************
-  58   1          EA = 1;
-  59   1          LED = 0;
-  60   1        
-  61   1      // Fin Code Initialisations ***************************************************
-  62   1        
-  63   1      // Début Insertion Code Phase Démarrage *************************************** 
-  64   1            
-  65   1            
-  66   1      // Fin Code phase Démarrage ***************************************************
-  67   1        
-  68   1        
-  69   1        while(1)
-  70   1        {
-  71   2          Decodage();
-  72   2        }
-  73   1      }
-  74          
-  75          //-----------------------------------------------------------------------------
-  76          //-----------------------------------------------------------------------------
-  77          // Fonctions de configuration des divers périphériques
+  55   1          LED = 0;
+  56   1        
+  57   1      // Fin Code Initialisations ***************************************************
+  58   1        
+  59   1      // Début Insertion Code Phase Démarrage *************************************** 
+  60   1            
+  61   1            
+  62   1      // Fin Code phase Démarrage ***************************************************
+  63   1        
+  64   1        
+  65   1        while(1)
+  66   1        {
+  67   2          Decodage();
+  68   2        }
+  69   1      }
+  70          
+  71          //-----------------------------------------------------------------------------
+  72          //-----------------------------------------------------------------------------
+  73          // Fonctions de configuration des divers périphériques
+  74          //-----------------------------------------------------------------------------
+  75          // Insérez vos fonctions de configuration ici
+  76          
+  77          //-----------------------------------------------------------------------------
   78          //-----------------------------------------------------------------------------
-  79          // Insérez vos fonctions de configuration ici
-  80          
-  81          //-----------------------------------------------------------------------------
-  82          //-----------------------------------------------------------------------------
-  83          // Fonctions d'interruptions
-  84          //-----------------------------------------------------------------------------
-  85          // Insérez vos fonctions d'interruption ici
-  86          
-  87          void ISR_SPI0() interrupt 6{
-  88   1        SPIF = 0;
-  89   1        recieveBuffer[i] = SPI0DAT;
-  90   1        if (recieveBuffer[i] == '&'){
-  91   2          nb_char_vide++;
-  92   2        }
-  93   1        if (recieveBuffer[i] == 'H' && recieveBuffer[i-1] == 'U'){
-  94   2          lMessage = i-4-nb_char_vide;
-  95   2          i = 0;
-  96   2          nb_char_vide = 0;
-  97   2          EOR_flag = 1;
-  98   2        }
-  99   1        if (i == 15){
- 100   2          i = 0;
- 101   2        }
- 102   1        i++;
- 103   1      }
+  79          // Fonctions d'interruptions
+  80          //-----------------------------------------------------------------------------
+  81          // Insérez vos fonctions d'interruption ici
+  82          
+  83          void ISR_SPI0() interrupt 6{
+  84   1        SPIF = 0;
+  85   1        recieveBuffer[i] = SPI0DAT;
+  86   1        if (recieveBuffer[i] == '~'){
+  87   2          nb_char_vide++;
+  88   2        }
+  89   1        if (recieveBuffer[i] == 'H' && recieveBuffer[i-1] == 'U'){
+  90   2          lMessage = i-4-nb_char_vide;
+  91   2          i = 0;
+  92   2          nb_char_vide = 0;
+  93   2          EOR_flag = 1;
+  94   2        }
+  95   1        if (i == 20){
+  96   2          i = 0;
+  97   2        }
+  98   1        i++;
+  99   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    236    ----
+   CODE SIZE        =    228    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =     25    ----
+   XDATA SIZE       =     35    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      8    ----
+   DATA SIZE        =      7    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      1    ----
 END OF MODULE INFORMATION.

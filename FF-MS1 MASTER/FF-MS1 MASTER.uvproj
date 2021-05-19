@@ -406,16 +406,6 @@
               <FileType>5</FileType>
               <FilePath>.\FF-MS1_Config.H</FilePath>
             </File>
-            <File>
-              <FileName>FF-MS1_Divers.C</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\FF-MS1_Divers.C</FilePath>
-            </File>
-            <File>
-              <FileName>FF-MS1_Divers.H</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\FF-MS1_Divers.H</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>

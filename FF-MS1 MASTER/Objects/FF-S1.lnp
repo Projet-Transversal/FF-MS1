@@ -1,6 +1,5 @@
 ".\Objects\STARTUP.obj",
 ".\Objects\FF-MS1.obj",
-".\Objects\FF-MS1_Config.obj",
-".\Objects\FF-MS1_Divers.obj" 
+".\Objects\FF-MS1_Config.obj" 
 TO ".\Objects\FF-S1" 
 PRINT(".\Listings\FF-S1.m51") RAMSIZE(256) 

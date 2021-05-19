@@ -37,14 +37,14 @@ void Reset_Sources_Init()
 
 void Port_IO_Init()
 {
-    // P0.0  -  Unassigned, Open-Drain, Digital
-    // P0.1  -  Unassigned, Open-Drain, Digital
-    // P0.2  -  CHG_FREQ, Open-Drain, Digital
-    // P0.3  -  Unassigned,  Open-Drain, Digital
+    // P0.0  -  SCK, Push-Pull, Digital
+    // P0.1  -  MISO, Open-Drain, Digital
+    // P0.2  -  MOSI, Push-Pull, Digital
+    // P0.3  -  NSS,  Open-Drain, Digital, Unused
     // P0.4  -  Unassigned,  Open-Drain, Digital
     // P0.5  -  Unassigned,  Open-Drain, Digital
     // P0.6  -  Unassigned,  Open-Drain, Digital
-    // P0.7  -  Unassigned,  Open-Drain, Digital
+    // P0.7  -  SLAVE_NSS,  Push-Pull, Digital
 
     // P1.0  -  Unassigned,  Open-Drain, Digital
     // P1.1  -  Unassigned,  Open-Drain, Digital
@@ -66,12 +66,12 @@ void Port_IO_Init()
 
     // P3.0  -  Unassigned,  Open-Drain, Digital
     // P3.1  -  Unassigned,  Open-Drain, Digital
-    // P3.2  -  FREQ_OUT,    Push-Pull, Digital
+    // P3.2  -  Unassigned,   Push-Pull, Digital
     // P3.3  -  Unassigned,  Open-Drain, Digital
     // P3.4  -  Unassigned,  Open-Drain, Digital
     // P3.5  -  Unassigned,  Open-Drain, Digital
     // P3.6  -  Unassigned,  Open-Drain, Digital Input INT6
-    // P3.7  -  BP        ,  Open-Drain, Digital Input INT7
+    // P3.7  -  Unassigned,  Open-Drain, Digital Input INT7
 		
 		// P4.0 to P7.7   Unassigned,  Open-Drain, Digital
 		
@@ -96,7 +96,7 @@ void Config_SPI0()
 	SPIEN = 1;
 	MSTEN = 1;
 	EIE1 |= 0x01;
-	SPI0CKR = 0x50;
+	SPI0CKR = 0x30;
 }
 
 //-----------------------------------------------------------------------------

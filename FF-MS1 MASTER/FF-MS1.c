@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------
 // TP5.c
 //-----------------------------------------------------------------------------
-// AUTH: 
-// DATE: 
+// AUTH: Mehdi Slama & Julien Pinard
+// DATE: Le début des temps
 //
 // Target: C8051F02x
 // Tool chain: KEIL Microvision 4
@@ -11,7 +11,6 @@
 #include <C8051F020.h>
 #include "c8051F020_SFR16.h"
 #include "FF-MS1_Config.h"
-#include "FF-MS1_Divers.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -19,23 +18,20 @@
 #define Disable_Timer3 TMR3CN = 0x00
 
 sbit LED = P1^6;
-sbit Button = P3^7;
 sbit SLAVE_NSS = P0^7;
 char i = 0;
-char SPIcounter = 0;
 char SPIlength = 0;
-char xdata message[10];
+char SPIcounter = 0;
+char xdata message[15];
 char* ptr_message = &message;
-char xdata sendBuffer[14];
+char* ogptr_message = &message;
+char xdata sendBuffer[19];
 char* ptr_sendBuffer = &sendBuffer;
+char* ogptr_sendBuffer = &sendBuffer;
+char envoi[10];
+char* ogptr_envoi = &envoi;
+char* ptr_envoi = &envoi;
 // Prototypes de Fonctions
-
-void Transfert(char c){
-	for(i=0;i < 125;i++);
-	SLAVE_NSS = 0;
-	for(i=0;i < 10;i++);
-	SPI0DAT = c;
-}
 
 void Codage (char SPIlength, char* ptr_sendBuffer, char* ptr_message){
 	*ptr_sendBuffer++ = 'B';
@@ -44,14 +40,30 @@ void Codage (char SPIlength, char* ptr_sendBuffer, char* ptr_message){
 		*ptr_sendBuffer++ = *ptr_message++;
 		i++;
 	}
-	while (i < (10)){
-		*ptr_sendBuffer++ = '&';
+	while (i < (15)){
+		*ptr_sendBuffer++ = '~';
 		i++;
 	}
-	//TODO : Ajout des caractères vides pour remplir
 	*ptr_sendBuffer++ = 'U';
 	*ptr_sendBuffer++ = 'H';
 	i = 0;
+}
+
+void send_SPI(char* ptr_message,char* ptr_envoi,char* ptr_sendBuffer){
+	while(*ptr_envoi != '\0'){
+		*ptr_message++ = *ptr_envoi++;
+		SPIlength++;
+	}
+	ptr_envoi = ogptr_envoi;
+	ptr_message = ogptr_message;
+	Codage(SPIlength,ptr_sendBuffer,ptr_message);
+	SPIlength=0;
+}
+void Transfert(char c){
+	for(i=0;i < 125;i++);
+	SLAVE_NSS = 0;
+	for(i=0;i < 10;i++);
+	SPI0DAT = c;
 }
 
 //-----------------------------------------------------------------------------
@@ -59,39 +71,29 @@ void Codage (char SPIlength, char* ptr_sendBuffer, char* ptr_message){
 // MAIN Routine
 //-----------------------------------------------------------------------------
 void main (void) {
-	
+
+// Début Code Inistalisations *************************************************
+
 	  Init_Device();  // Appel des configurations globales
 	  
-// Début Insertion Code Configuration des périphériques ***********************
 		EA = 1;
 		LED = 0;
 		SLAVE_NSS = 1;
 	
 // Fin Code Initialisations ***************************************************
 	
-// Début Insertion Code Phase Démarrage ***************************************	
-			
-			
-// Fin Code phase Démarrage	***************************************************
-	
-	
+	//Main loop
 	while(1)
 	{
-		//Mettre le message à envoyer dans le buffer message, qui n'accepte que 10 char max.
-		message[0] = 75;
-		message[1] = '$';
-		message[2] = 'W';
-		SPIlength = 3; //Spécifiez la longueur du message
-		Codage(SPIlength,ptr_sendBuffer,ptr_message);
-		
+		//Mettre le message à envoyer dans un string, qui n'accepte que 15 char max.
+		strcpy(envoi,"ABC");
+		send_SPI(ptr_message,envoi,ptr_sendBuffer);
 	}
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-// Fonctions de configuration des divers périphériques
-//-----------------------------------------------------------------------------
-// Insérez vos fonctions de configuration ici
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -106,8 +108,11 @@ void ISR_SPI0() interrupt 6{
 
 void ISR_TMR3() interrupt 14{
 	Reset_Timer3Overflow;
-	if (SPIcounter > 13){
+	if (SPIcounter > 18){
 		SPIcounter = 0;
+		ptr_sendBuffer = ogptr_sendBuffer;
+		ptr_message = ogptr_message;
+		
 	}
 	else {
 		Transfert(sendBuffer[SPIcounter]);

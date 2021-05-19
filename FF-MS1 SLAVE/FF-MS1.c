@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------
 // TP5.c
 //-----------------------------------------------------------------------------
-// AUTH: 
-// DATE: 
+// AUTH: Mehdi Slama & Julien Pinard
+// DATE: L'aube de l'humanité
 //
 // Target: C8051F02x
 // Tool chain: KEIL Microvision 4
@@ -11,16 +11,12 @@
 #include <C8051F020.h>
 #include "c8051F020_SFR16.h"
 #include "FF-MS1_Config.h"
-#include "FF-MS1_Divers.h"
 #include <stdlib.h>
-#include <string.h>
 
 sbit LED = P1^6;
-sbit Button = P3^7;
-char xdata messageBuffer[10];
-char xdata recieveBuffer[15];
+char xdata messageBuffer[15];
+char xdata recieveBuffer[20];
 char* ptr_recieveBuffer;
-char mCounter = 0;
 char i = 0;
 char j = 0;
 char lMessage = 0;
@@ -38,7 +34,7 @@ void Decodage(){ //Cette fonction écrit le message reçu dans le messageBuffer
 				j++;
 				}
 /////////////// Vérification du message-test			
-			if (messageBuffer[0] == 75 && messageBuffer[1] == '$' && messageBuffer[2] == 'W'){
+			if (messageBuffer[0] == 'A' && messageBuffer[1] == 'B' && messageBuffer[2] == 'C'){
 				LED = 1;
 				}
 			}
@@ -87,7 +83,7 @@ void main (void) {
 void ISR_SPI0() interrupt 6{
 	SPIF = 0;
 	recieveBuffer[i] = SPI0DAT;
-	if (recieveBuffer[i] == '&'){
+	if (recieveBuffer[i] == '~'){
 		nb_char_vide++;
 	}
 	if (recieveBuffer[i] == 'H' && recieveBuffer[i-1] == 'U'){
@@ -96,7 +92,7 @@ void ISR_SPI0() interrupt 6{
 		nb_char_vide = 0;
 		EOR_flag = 1;
 	}
-	if (i == 15){
+	if (i == 20){
 		i = 0;
 	}
 	i++;
